@@ -6,7 +6,8 @@ class TestParser(unittest.TestCase):
     def test_parser_parse_line(self):
         line = 'test north=a south=b east=c west=d'
         expected = {
-            'test': {
+            'city_name': 'test',
+            'neighbours': {
                 'north': 'a',
                 'south': 'b',
                 'east': 'c',
