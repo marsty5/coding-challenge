@@ -91,3 +91,23 @@ def step_impl(context):
 def step_impl(context):
     move_count = 10000
     assert_that(context.sim.move_count, equal_to(int(move_count)))
+
+@given("I have a world with one city")
+def step_impl(context):
+    world = World()
+
+    city_a = City('a')
+    world.add_city(city_a)
+
+    context.world = world
+
+
+@then("There are 0 aliens")
+def step_impl(context):
+    final_alien_count = 0
+    assert_that(context.sim.world.get_alien_count(), final_alien_count)
+
+
+@then("^The alien is in a city with no neighbours$")
+def step_impl(context):
+    assert_that(context.sim.world.cities['a'].has_neighbours, equal_to(False))

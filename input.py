@@ -1,5 +1,6 @@
 from collections import defaultdict, namedtuple
 import random
+from sets import Set
 
 
 class Parser(object):
@@ -43,6 +44,11 @@ class City(object):
 
         return all(self.neighbours[direction].name == other.neighbours[direction].name for direction in self.neighbours.keys())
 
+    def has_neighbours(self):
+        if self.neighbours:
+            return True
+        else:
+            return False
 
 class WorldBuilder(object):
 
@@ -128,11 +134,7 @@ class World(object):
     def get_alien_count(self):
         return sum(self.aliens.values())
 
-
-
-
 Move = namedtuple('Move', ['source', 'dest'])
-
 
 class WorldSimulator(object):
 
@@ -149,21 +151,28 @@ class WorldSimulator(object):
         move_list = self._get_move_list()
         self._apply_moves_to_world(move_list)
 
+    """ Is there a better way to check if the city has neighbours? """
     def _get_move_list(self):
         move_spec = []
+        empty_move = Move('', '')
         for city_name in self.world.city_names:
             city_alien_count = self.world.aliens[city_name]
 
             for alien_idx in range(city_alien_count):
                 move = self._get_move(city_name)
-                move_spec.append(move)
+                if move != empty_move:
+                    move_spec.append(move)
 
         return move_spec
 
     def _get_move(self, city_name):
         neighbours = self.world.cities[city_name].neighbours
-        dest_city = random.choice(neighbours.values())
-        return Move(city_name, dest_city.name)
+
+        if neighbours:
+            dest_city = random.choice(neighbours.values())
+            return Move(city_name, dest_city.name)
+        else:
+            return Move('', '')
 
     def _apply_moves_to_world(self, move_list):
         for move in move_list:
@@ -202,9 +211,51 @@ class WorldSimulator(object):
 
     def run_simulation(self):
         allowed_moves = 10000
+        zero_aliens = 0
+        exit_message = 0
 
-        while self.move_count < allowed_moves:
+        while True:
             self.perform_random_moves()
+            self.move_count += 1
             self.resolve_conflicts()
 
-            self.move_count += 1
+            if self.world.get_alien_count() == zero_aliens:
+                print '\nNo aliens in the world. Exiting...'
+                break
+
+            if self.move_count == allowed_moves:
+                print '\nMax moves reached. Exiting...'
+                break
+
+            occupied_cities_with_no_neighbours = self.get_occupied_cities_with_no_neighbours()
+            if len(occupied_cities_with_no_neighbours) > 0:
+                print '\nNo moves allowed. Exiting...'
+                break
+
+        return exit_message
+
+    def get_occupied_cities_with_no_neighbours(self):
+
+        occupied_city_names = self._get_occupied_cities()
+        occupied_city_names_with_no_neighbours = self._get_city_names_with_no_neighbours(occupied_city_names)
+
+        return occupied_city_names_with_no_neighbours
+
+    def _get_occupied_cities(self):
+        zero_aliens = 0
+        occupied_city_names = Set()
+
+        for city_name, alien_count in self.world.aliens.iteritems():
+            if alien_count > zero_aliens:
+                occupied_city_names.add(city_name)
+
+        return occupied_city_names
+
+    def _get_city_names_with_no_neighbours(self, city_names):
+        cities_with_no_neighbours = Set()
+
+        for city_name in city_names:
+            if not self.world.cities[city_name].has_neighbours():
+                cities_with_no_neighbours.add(city_name)
+
+        return cities_with_no_neighbours
