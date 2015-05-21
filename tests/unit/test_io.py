@@ -227,6 +227,11 @@ class TestWorldSimulator(unittest.TestCase):
         sim.resolve_conflicts()
         self.assertNotIn('a', sim.world.city_names)
 
+        for city_name in sim.world.city_names:
+            neighbours = sim.world.cities[city_name].neighbours.values()
+            for neighbour in neighbours:
+                self.assertNotEqual(neighbour.name, 'a')
+
     def test_resolve_conflicts_removes_aliens(self):
         alien_count = 2
 

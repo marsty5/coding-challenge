@@ -177,8 +177,8 @@ class WorldSimulator(object):
 
             if alien_count > 1:
                 print '{} has been destroyed by {} aliens!'.format(city_name, alien_count)
-                self._delete_neighbours(city_name)
                 self._delete_aliens(city_name)
+                self._delete_neighbours(city_name)
                 self._delete_city(city_name)
 
     def _get_alien_count(self, city_name):
@@ -187,11 +187,12 @@ class WorldSimulator(object):
     def _delete_aliens(self, city_name):
         del self.world.aliens[city_name]
 
-    def _delete_neighbours(self, city_name):
-        neighbours = self.world.cities[city_name].neighbours
+    def _delete_neighbours(self, city_name_to_be_deleted):
+        neighbours = self.world.cities[city_name_to_be_deleted].neighbours
+        for direction, neighbour in neighbours.iteritems():
+            opposite_direction = self.world.get_opposite_direction(direction)
 
-        for direction, neighbour_name in neighbours.items():
-            del neighbours[direction]
+            del neighbour.neighbours[opposite_direction]
 
     def _delete_city(self, city_name):
         del self.world.cities[city_name]

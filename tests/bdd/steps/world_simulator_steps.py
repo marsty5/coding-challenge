@@ -1,5 +1,5 @@
 from behave import *
-from hamcrest import assert_that, equal_to
+from hamcrest import *
 from input import WorldBuilder, WorldSimulator, City, World
 
 use_step_matcher("parse")
@@ -68,15 +68,16 @@ def step_impl(context):
 @then("The city is removed from the world")
 def step_impl(context):
     assert_that(context.city_name_with_conflicts not in context.sim.world.city_names)
-    cities = context.sim.world.cities
 
-    for city in cities.values():
-        assert_that(context.city_name_with_conflicts not in city.neighbours.keys())
+    all_city_names = set()
+    for city in context.sim.world.cities.values():
+        for neighbour in city.neighbours.values():
+            all_city_names.add(neighbour.name)
 
+    assert_that('a' not in all_city_names)
 
 @step("Those aliens are removed from the world")
 def step_impl(context):
-    #assert_that(len(context.sim.world.get_alien_count()), equal_to(0))
     assert_that(context.sim.world.get_alien_count(), equal_to(context.alien_with_no_conflicts_count))
 
 
