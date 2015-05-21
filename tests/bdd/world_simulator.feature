@@ -16,14 +16,13 @@ Feature: World Simulator
     Then The city is removed from the world
       And Those aliens are removed from the world
 
-#  Scenario: Stop the simulation
-#    Given I have a world
-#      And I have 10 aliens
-#      And I have a world simulation
-#    When I have 0 aliens
-#    Then Stop Simulation
-#
-#
+  Scenario: Simulation stops after 10,000 moves
+    Given I have a world
+      And I make a world simulation
+      And I put 1 aliens in the world
+    When I run the simulation
+    Then I simulated 10,000 moves
+
 #  Scenario: Stop the simulation
 #    Given I have a world
 #      And I have 10 aliens

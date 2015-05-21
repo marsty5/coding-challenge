@@ -101,6 +101,10 @@ class World(object):
         self.cities = cities
         self.aliens = defaultdict(int)
 
+    @property
+    def city_names(self):
+        return self.cities.keys()
+
     def add_city(self, city):
         self.cities[city.name] = city
 
@@ -124,9 +128,7 @@ class World(object):
     def get_alien_count(self):
         return sum(self.aliens.values())
 
-    @property
-    def city_names(self):
-        return self.cities.keys()
+
 
 
 Move = namedtuple('Move', ['source', 'dest'])
@@ -136,6 +138,7 @@ class WorldSimulator(object):
 
     def __init__(self, world):
         self.world = world
+        self.move_count = 0
 
     def add_aliens(self, alien_count):
         for alien_idx in range(alien_count):
@@ -197,3 +200,11 @@ class WorldSimulator(object):
     def _delete_city(self, city_name):
         del self.world.cities[city_name]
 
+    def run_simulation(self):
+        allowed_moves = 10000
+
+        while self.move_count < allowed_moves:
+            self.perform_random_moves()
+            self.resolve_conflicts()
+
+            self.move_count += 1

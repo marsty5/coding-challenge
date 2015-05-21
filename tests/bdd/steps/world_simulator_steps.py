@@ -76,18 +76,18 @@ def step_impl(context):
 
     assert_that('a' not in all_city_names)
 
+
 @step("Those aliens are removed from the world")
 def step_impl(context):
     assert_that(context.sim.world.get_alien_count(), equal_to(context.alien_with_no_conflicts_count))
 
 
-@then("Stop Simulation")
+@when("I run the simulation")
 def step_impl(context):
+    context.sim.run_simulation()
 
-    pass
 
-
-@when("I simulated 10,000 moves")
+@then("I simulated 10,000 moves")
 def step_impl(context):
-
-    pass
+    move_count = 10000
+    assert_that(context.sim.move_count, equal_to(int(move_count)))
