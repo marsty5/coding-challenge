@@ -1,16 +1,12 @@
 from behave import *
-from testtools.testcase import unittest
-from input import GraphBuilder, City
+from input import City, WorldBuilder
 
-from hamcrest import assert_that, equal_to, is_not
+from hamcrest import assert_that, equal_to
 
 use_step_matcher("re")
 
 @given("I have a list of city dicts")
 def step_impl(context):
-    """
-    :type context behave.runner.Context
-    """
     context.city_dicts = [
         {
             'city_name': 'a',
@@ -23,20 +19,13 @@ def step_impl(context):
     ]
 
 
-@when("I build a graph")
+@when("I build a world")
 def step_impl(context):
-    """
-    :type context behave.runner.Context
-    """
-    context.graph = GraphBuilder.build_graph(context.city_dicts)
+    context.world = WorldBuilder.build_world(context.city_dicts)
 
 
-@then("I should have the correct graph")
+@then("I should have the correct world")
 def step_impl(context):
-    """
-    :type context behave.runner.Context
-    """
-
     city_a = City('a')
     city_b = City('b')
 
@@ -48,4 +37,4 @@ def step_impl(context):
         'b': city_b,
     }
 
-    assert_that(context.graph, equal_to(expected_output))
+    assert_that(context.world.cities, equal_to(expected_output))
