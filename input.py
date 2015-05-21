@@ -172,14 +172,27 @@ class WorldSimulator(object):
 
     def resolve_conflicts(self):
         for city_name in self.world.city_names:
-            alien_count = self.world.aliens[city_name]
+
+            alien_count = self._get_alien_count(city_name)
 
             if alien_count > 1:
                 print '{} has been destroyed by {} aliens!'.format(city_name, alien_count)
-                del(self.world.aliens[city_name])
+                self._delete_neighbours(city_name)
+                self._delete_aliens(city_name)
+                self._delete_city(city_name)
 
-                neighbours = self.world.cities[city_name].neighbours
-                for direction, neighbour_name in neighbours.items():
-                    del(neighbours[direction])
+    def _get_alien_count(self, city_name):
+        return self.world.aliens[city_name]
 
-                del(self.world.cities[city_name])
+    def _delete_aliens(self, city_name):
+        del self.world.aliens[city_name]
+
+    def _delete_neighbours(self, city_name):
+        neighbours = self.world.cities[city_name].neighbours
+
+        for direction, neighbour_name in neighbours.items():
+            del neighbours[direction]
+
+    def _delete_city(self, city_name):
+        del self.world.cities[city_name]
+

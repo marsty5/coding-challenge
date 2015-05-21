@@ -188,13 +188,7 @@ class TestWorldSimulator(unittest.TestCase):
 
     def test_world_length_of_get_move_list(self):
         alien_count = 10
-        """ How can I make this prettier and DRY?
 
-        for alien_idx in range(0, alien_count - 7):
-            self.expected_world.add_alien_to_city('a')
-        for alien_idx in range(alien_count - 7, alien_count):
-            self.expected_world.add_alien_to_city('b')
-        """
         sim = WorldSimulator(self.expected_world)
         sim.add_aliens(alien_count)
         move_list = sim._get_move_list()
@@ -214,29 +208,27 @@ class TestWorldSimulator(unittest.TestCase):
         self.assertEqual(expected_world.aliens['c'], 1)
 
     def test_world_move_maintains_alien_count(self):
-        alien_count = 10
+        alien_count = 2
 
         sim = WorldSimulator(self.expected_world)
         sim.add_aliens(alien_count)
 
         move_list = sim._get_move_list()
         sim._apply_moves_to_world(move_list)
-
         self.assertEqual(sim.world.get_alien_count(), alien_count)
 
     def test_resolve_conflicts_removes_city(self):
-        alien_count = 10
+        alien_count = 2
 
         sim = WorldSimulator(self.expected_world)
         for alien_idx in range(alien_count):
             sim.world.add_alien_to_city('a')
 
         sim.resolve_conflicts()
-
         self.assertNotIn('a', sim.world.city_names)
 
     def test_resolve_conflicts_removes_aliens(self):
-        alien_count = 10
+        alien_count = 2
 
         sim = WorldSimulator(self.expected_world)
 

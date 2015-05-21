@@ -16,13 +16,6 @@ Feature: World Simulator
     Then The city is removed from the world
       And Those aliens are removed from the world
 
-#  Scenario: Conflict resolution means we remove cities and aliens
-#    Given I have a world simulation with one city
-#      And I have more than one aliens in that city
-#    When I resolve conflicts
-#    Then The world is emppty
-#      And The aliens are 0
-
 #  Scenario: Stop the simulation
 #    Given I have a world
 #      And I have 10 aliens
