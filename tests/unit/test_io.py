@@ -249,45 +249,6 @@ class TestWorldSimulator(unittest.TestCase):
         self.assertEqual(sim.world.get_alien_count(), alien_count_final)
         self.assertNotIn('a', sim.world.aliens.keys())
 
-    def test_run_simulation_till_zero_aliens(self):
-
-        city_a = City('a')
-
-        builder = WorldBuilder()
-        builder.world.add_city(city_a)
-
-        sim = WorldSimulator(builder.world)
-
-        alien_count = 2
-        for alien_idx in range(alien_count):
-            sim.world.add_alien_to_city('a')
-
-        sim.run_simulation()
-        zero_aliens = 0
-        self.assertEqual(sim.world.get_alien_count(), zero_aliens)
-
-    def test_run_simulation_till_max_moves_reached(self):
-
-        city_a = City('a')
-        city_b = City('b')
-
-        builder = WorldBuilder()
-        builder.world.add_city(city_a)
-        builder.world.add_city(city_b)
-        builder.world.make_neighbours(city_a.name, 'south', city_b.name)
-
-        sim = WorldSimulator(builder.world)
-        sim.world.add_alien_to_city('a')
-        sim.run_simulation()
-
-        allowed_moves = 10000
-        self.assertEqual(sim.move_count, allowed_moves)
-
-    """
-    It's like taking a picture of me holding an apple with my right hand
-    And then taking a picture of me holding the same apple with my left hand
-    And i'm comparing the two pictures
-    """
     def test_run_simulation_till_no_moves_allowed(self):
 
         city_a = City('a')
